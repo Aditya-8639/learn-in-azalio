@@ -4,6 +4,8 @@ grafana set up errors in the code
 
 
 # also there was a change of the  of cd /run/grafana vi grafana.pid
+#  /usr/lib/systemd/system/grafana-server.service    there it has service file which is attached whith the main branch for now
+
 
 # there is also one file that /etc/sysconfig/grafana-server 
         GRAFANA_USER=grafana
