@@ -1,3 +1,95 @@
 https://chatgpt.com/share/6751360d-b410-800e-ac27-8dec33c69e15
 
 grafana set up errors in the code
+
+
+
+
+
+1. Validate Environment File
+Ensure /etc/sysconfig/grafana-server exists and is correctly configured.
+Verify all required variables (CONF_FILE, PID_FILE_DIR, LOG_DIR, DATA_DIR, etc.) are properly defined:
+bash
+Copy code
+ls -l /etc/sysconfig/grafana-server
+cat /etc/sysconfig/grafana-server
+
+2. Check Working and Runtime Directories
+Confirm WorkingDirectory=/usr/share/grafana and RuntimeDirectory=grafana exist and are writable:
+bash
+Copy code
+ls -ld /usr/share/grafana /run/grafana
+sudo chown -R grafana:grafana /usr/share/grafana /run/grafana
+
+3. Review Resource Limits
+Check if the LimitNOFILE=10000 value is sufficient:
+bash
+Copy code
+ulimit -n
+Increase the value if necessary.
+
+4. Temporarily Relax Security Directives
+Temporarily disable these directives in the service file to rule out restrictions causing failures:
+garafana.ini
+ProtectSystem=false
+NoNewPrivileges=false
+PrivateDevices=false
+
+Restart the service:
+
+
+sudo systemctl daemon-reload
+sudo systemctl restart grafana-server.service
+
+5. Verify Dependencies
+Ensure all database services (e.g., PostgreSQL, MariaDB, InfluxDB) are running if Grafana depends on them:
+bash
+
+systemctl status postgresql mariadb mysqld influxdb
+
+6. Adjust Restart Behavior
+Add StartLimitIntervalSec=30 and StartLimitBurst=5 to the [Service] section of the file to handle rapid restarts:
+
+StartLimitIntervalSec=30
+StartLimitBurst=5
+Reload and restart the service:
+
+sudo systemctl daemon-reload
+sudo systemctl restart grafana-server.service
+
+7. Permissions
+Ensure the grafana user and group have proper permissions for critical directories:
+sudo chown -R grafana:grafana /usr/share/grafana /run/grafana /etc/grafana
+
+////sincemy suser is ccaas so in garafana.service also the changes asre ccaas
+
+8. Validate Configuration
+Test Grafana’s configuration for errors:
+
+grafana-server --config=/etc/grafana/grafana.ini cfg:validate
+
+9. Check Logs
+Analyze logs for specific error messages:
+journalctl -u grafana-server.service -n 100
+
+10. Compare Configurations
+Compare the service file and /etc/sysconfig/grafana-server on onm1 with onm2 (where Grafana is running fine).
+
+11. Confirm Disk Space and Resource Availability
+Check available disk space and system resources:
+
+df -h
+free -h
+top
+
+12. Reinstall Grafana (if needed)
+If issues persist, try reinstalling Grafana:
+
+sudo yum remove grafana
+sudo yum install grafana
+
+13. Test Manual Start
+Try starting Grafana manually to catch startup errors:
+
+sudo systemctl start grafana-server.service
+sudo systemctl status grafana-server.service
