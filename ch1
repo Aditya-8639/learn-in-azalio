@@ -10,3 +10,4 @@ HA set up from crm , grafana , mariadb ,mongodb cluster shards
 keepalived setup for load balancing
 handleling the databases mongo and the mariadb and theri HA set up mariadb maste master 
 and the mongodb one more and cluster and primary selection set up
+shell scripting
