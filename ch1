@@ -1,13 +1,24 @@
-asterisk , sip , build deploy , stun 
+asterisk , sip , build deploy (forntend super admin , backeend processor , voice nodes ) , stun 
 prometheus pushgateway 
 grafana dashboard 
+
 asterisk 
 react 
 node - email ticket chat also reports , testing 
 debugging 
-troubleshoot
-HA set up from crm , grafana , mariadb ,mongodb cluster shards 
+
+troubleshoot (tps) smart vault hits to ccs , configuration /etc/hosts url added of smartvault , made sso possible 
+
+HA set up from crm , grafana , mariadb ,mongodb cluster shards  // also on lb(need session from manas)
+
 keepalived setup for load balancing
+
 handleling the databases mongo and the mariadb and theri HA set up mariadb maste master 
+
 and the mongodb one more and cluster and primary selection set up
-shell scripting
+
+shell scripting (scripts to send data at ftp server cdr logs , mail for various task like daily hourly report , sme-wise report , redis , cdr sync , grafana back_up )
+standlone created dev environment on the ocp , 3 vm devcrm ,devsip(webrtc , asterisk) , devdb 
+/// networking for this in , onm ,out ip
+
+backup process and the agent installed , what all the api's work and  how the data sync between the client and the dell server 
