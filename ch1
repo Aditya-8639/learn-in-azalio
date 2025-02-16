@@ -17,7 +17,9 @@ handleling the databases mongo and the mariadb and theri HA set up mariadb maste
 
 and the mongodb one more and cluster and primary selection set up
 
-shell scripting (scripts to send data at ftp server cdr logs , mail for various task like daily hourly report , sme-wise report , redis , cdr sync , grafana back_up )
+shell scripting (scripts to send data at ftp server cdr logs , mail for various task like daily hourly report , sme-wise report , redis , cdr sync , grafana back_up , processor ha 
+adding longcodes in the db)
+
 standlone created dev environment on the ocp , 3 vm devcrm ,devsip(webrtc , asterisk) , devdb 
 /// networking for this in , onm ,out ip
 
