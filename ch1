@@ -23,4 +23,4 @@ adding longcodes in the db)
 standlone created dev environment on the ocp , 3 vm devcrm ,devsip(webrtc , asterisk) , devdb 
 /// networking for this in , onm ,out ip
 
-backup process and the agent installed , what all the api's work and  how the data sync between the client and the dell server 
+backup process and the agent installed fluentd , what all the api's work and  how the data sync between the client and the dell server 
