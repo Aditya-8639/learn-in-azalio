@@ -1,1 +1,129 @@
-mongodb
+# Understanding SELinux Denial and Fixing MongoDB Access Issues
+
+## **1. Why This Happens**
+MongoDB (`mongod`) is trying to access `/proc/fs`, but SELinux is blocking it due to security policies.
+This is usually caused by MongoDB’s **Full-Time Diagnostic Data Capture (FTDC)**, which collects system metrics.
+
+---
+
+## **2. How to Analyze the SELinux Denial Logs**
+Run the following command to check recent SELinux denials:
+sudo ausearch -m AVC,USER_AVC -ts recent | tail -n 20
+
+markdown
+Copy
+Edit
+### **Understanding the Output:**
+Example Log:
+type=AVC msg=audit(1740481367.000:7294536): avc: denied { search } for
+pid=5836 comm="ftdc" name="fs" dev="proc" ino=12411 scontext=system_u:system_r:mongod_t:s0 tcontext=system_u:object_r:sysctl_fs_t:s0 tclass=dir permissive=0
+
+markdown
+Copy
+Edit
+#### **Breaking It Down:**
+- `pid=5836` → The **process ID** of MongoDB.
+- `comm="ftdc"` → The **subprocess** causing the issue (MongoDB’s FTDC).
+- `name="fs" dev="proc"` → It tried to access `/proc/fs`, but was denied.
+- `scontext=system_u:system_r:mongod_t:s0` → MongoDB is running in `mongod_t` security context.
+- `tcontext=system_u:object_r:sysctl_fs_t:s0` → The target is **protected by SELinux**.
+- `tclass=dir permissive=0` → **SELinux is enforcing the rule**, not just logging it.
+
+---
+
+## **3. How to Fix It**
+### ✅ **Option 1: Allow MongoDB to Access `/proc/fs` (Recommended)**
+Create a new SELinux policy to permit access:
+
+#### **Step 1: Generate a Policy**
+sudo ausearch -m AVC,USER_AVC -ts recent | audit2allow -M my_mongo_policy
+
+ruby
+Copy
+Edit
+**What this does:**  
+- **`ausearch -m AVC,USER_AVC -ts recent`** → Finds recent SELinux denials.  
+- **`audit2allow -M my_mongo_policy`** → Converts the denials into an **SELinux policy module**.
+
+#### **Step 2: Apply the Policy**
+sudo semodule -i my_mongo_policy.pp
+
+yaml
+Copy
+Edit
+**What this does:**  
+- **`semodule -i`** → Installs the policy module, allowing MongoDB to access `/proc/fs`.
+
+---
+
+### 🚨 **Option 2: Put SELinux in Permissive Mode for `mongod` (Testing Only)**
+If you want to **test** without blocking MongoDB but still log denials:
+sudo semanage permissive -a mongod_t
+
+markdown
+Copy
+Edit
+**What this does:**  
+- **`semanage permissive -a mongod_t`** → Puts `mongod_t` in **permissive mode** (logs denials but doesn't enforce them).
+
+#### **To Revert Back to Enforcing Mode**
+sudo semanage permissive -d mongod_t
+
+yaml
+Copy
+Edit
+
+---
+
+### ⛔ **Option 3: Disable SELinux (Not Recommended)**
+If you want to **completely disable** SELinux (⚠️ security risk):
+#### **Temporarily Disable (Until Reboot)**
+sudo setenforce 0
+
+markdown
+Copy
+Edit
+#### **Permanently Disable SELinux**
+sudo nano /etc/selinux/config
+
+makefile
+Copy
+Edit
+Change:
+SELINUX=enforcing
+
+css
+Copy
+Edit
+To:
+SELINUX=disabled
+
+markdown
+Copy
+Edit
+
+Then, **reboot** the system:
+sudo reboot
+
+yaml
+Copy
+Edit
+
+⚠️ **Warning:** Disabling SELinux **removes an important security layer**. Only do this if absolutely necessary!
+
+---
+
+## **4. What Should You Do?**
+- ✅ **If MongoDB is failing**, use **Option 1 (audit2allow)** to create a policy.  
+- 🛠️ **If you want to test first**, use **Option 2 (permissive mode)**.  
+- ⛔ **Avoid disabling SELinux unless necessary!**  
+
+---
+💡 **Need help?** Run the following and share the output:
+sudo ausearch -m AVC,USER_AVC -ts recent | tail -n 20
+
+pgsql
+Copy
+Edit
+
+🚀 **This guide ensures your MongoDB works while keeping SELinux security intact!**
