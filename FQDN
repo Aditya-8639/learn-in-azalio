@@ -1,0 +1,76 @@
+**Fully Qualified Domain Name (FQDN) Explained**
+
+### **1. What is FQDN?**
+A **Fully Qualified Domain Name (FQDN)** is the complete domain name of a computer, server, or resource on the internet or a private network. It uniquely identifies a system and consists of both the **hostname** and the **domain name**.
+
+### **2. FQDN Structure**
+An FQDN follows a hierarchical structure and is composed of multiple parts separated by dots (`.`):
+```
+[hostname].[domain].[TLD]
+```
+For example:
+```
+server1.example.com
+```
+- **`server1`** → Hostname (specific machine name)
+- **`example`** → Domain name (organization or company)
+- **`com`** → Top-Level Domain (TLD)
+
+### **3. Examples of FQDNs**
+- **`www.google.com`** → Web server of Google
+- **`mail.yahoo.com`** → Yahoo Mail server
+- **`db01.company.net`** → A database server in a company network
+
+### **4. How to Find the FQDN of a System?**
+#### **On Linux/macOS:**
+Run the following command:
+```bash
+hostname -f
+```
+
+#### **On Windows:**
+Run the following command in Command Prompt or PowerShell:
+```powershell
+ipconfig /all
+```
+Look for the **"Primary DNS Suffix"** under network settings.
+
+### **5. Why is FQDN Important?**
+✅ Used in **DNS (Domain Name System)** to resolve hostnames to IP addresses.
+✅ Essential for **SSL certificates** and secure communications.
+✅ Required for **email server configurations (SMTP, IMAP, POP3)**.
+✅ Helps in **remote access and server identification**.
+
+### **6. Setting Up an FQDN for a Server**
+1️⃣ **Edit the hostname file (Linux):**
+```bash
+echo "server1" > /etc/hostname
+```
+
+2️⃣ **Edit the hosts file:**
+```bash
+echo "192.168.1.10 server1.example.com server1" >> /etc/hosts
+```
+
+3️⃣ **Restart the network service:**
+```bash
+systemctl restart network
+```
+
+### **7. Checking the FQDN in DNS**
+Use the `nslookup` or `dig` command:
+```bash
+nslookup server1.example.com
+```
+Or:
+```bash
+dig server1.example.com
+```
+
+### **8. Summary**
+- **FQDN uniquely identifies a system** on a network.
+- **It consists of a hostname, domain name, and TLD**.
+- **Essential for networking, SSL, email servers, and remote access**.
+
+Would you like help configuring FQDN for your environment? 🚀
+
