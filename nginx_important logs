@@ -1,0 +1,79 @@
+**Understanding `large_client_header_buffers` and `client_max_body_size` in Nginx**
+
+### 🔹 `large_client_header_buffers 4 9k;` Explained in Detail
+
+#### **What Does It Do?**
+This setting in **nginx** controls how large HTTP headers can be when a client sends a request.
+
+- It **allocates 4 buffers**, each **9KB** in size.
+- This means nginx can handle up to **36KB** of request headers **per client** (`4 × 9K = 36K`).
+- If a request's headers exceed this limit, nginx **returns a "400 Bad Request" error**.
+
+#### **How It Works (Step by Step)**
+1️⃣ A client (browser, API, etc.) sends an **HTTP request** with headers (like `User-Agent`, `Cookies`, etc.).  
+2️⃣ Nginx **stores these headers** in memory buffers.  
+3️⃣ Each buffer can hold **9KB of data** (if a header is larger, it gets stored across multiple buffers).  
+4️⃣ If the total headers exceed **36KB**, nginx **rejects the request** with a **400 Bad Request** error.  
+
+#### **Why Is It Important?**
+- If your application uses **large headers or cookies**, you may need to **increase this value** (e.g., `4 16k;` or `8 16k;`).
+- If the value is too small, you might see **"400 Bad Request: Request Header Or Cookie Too Large"** errors.
+
+---
+
+### 🔹 `client_max_body_size 35M;` Explained in Detail
+
+#### **What Does It Do?**
+This setting controls the **maximum size** of the **request body** (not headers) that nginx will accept from a client.
+
+- The request body includes **file uploads, form data, JSON payloads**, etc.
+- Here, `35M` means **nginx will allow up to 35MB** for a request body.
+- If a request exceeds this size, nginx **returns a "413 Request Entity Too Large" error**.
+
+#### **How It Works?**
+1️⃣ A client sends a **POST/PUT request** with a body (e.g., a file upload or JSON data).  
+2️⃣ Nginx checks the **size of the request body**.
+3️⃣ If the body is **≤ 35MB**, nginx allows it to be processed.
+4️⃣ If the body is **> 35MB**, nginx **rejects the request** with a **413 Request Entity Too Large** error.
+
+#### **Why Is It Important?**
+- If users **upload large files**, this setting must be increased (e.g., `client_max_body_size 100M;`).
+- If you set it too high, it might **consume too much memory**.
+
+---
+
+### 🔹 How `large_client_header_buffers` and `client_max_body_size` Work Together
+- `large_client_header_buffers` → Controls **header size** (e.g., cookies, user-agent). Exceeding this limit gives a **400 error**.
+- `client_max_body_size` → Controls **request body size** (e.g., file uploads). Exceeding this limit gives a **413 error**.
+- Both settings help nginx **handle large requests efficiently** without overloading the server.
+
+---
+
+### 🔹 Example Nginx Configuration:
+```nginx
+server {
+    listen 80;
+    server_name example.com;
+
+    # Allow large headers (4 buffers of 16K each)
+    large_client_header_buffers 4 16k;
+
+    # Allow request bodies up to 50MB
+    client_max_body_size 50M;
+
+    location /upload {
+        proxy_pass http://backend;
+    }
+}
+```
+
+---
+
+### **Key Takeaways:**
+✅ `large_client_header_buffers` → Controls **how much header data** nginx will store.  
+✅ `client_max_body_size` → Controls **how large the request body** can be.  
+✅ **Increase these values** only if needed to prevent unnecessary resource usage.  
+✅ Too low values cause **400 or 413 errors**, depending on which limit is exceeded.  
+
+Hope this helps! 🚀
+
