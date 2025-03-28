@@ -1,0 +1,153 @@
+PPDM INSTALLATION GUIDE 
+
+ 
+
+Steps to install fsagent-  
+
+First make sure you have connectivity to PPDM (PowerProtect Data Manager Server). PPDM server IP is 10.141.157.92.  
+
+If your connectivity is working, the PPDM server is reachable, and you should be able to successfully telnet to port 8443 on the PPDM server, then everything is set up correctly. 
+
+Add fqdn host entry for ppdm in /etc/hosts file.  
+
+ 
+
+10.142.61.68   crm1.smartping.ai     crm1 ( fqdn in the host entry must be same as the hostname of the vm ) 
+
+10.141.157.92  mhsrvppdm01.smartping.ai        mhsrvppdm01 
+
+ 
+
+************************* 
+
+Un-install ppdm agent 
+
+************************* 
+
+  
+
+=> Remove package from host using below command 
+
+#apt remove powerprotect-agentsvc/now ppdm-fsagent/now 
+
+=> then remove the binary directory as per below detail 
+
+drwxr-xr-x 4 root root 4096 Aug 28 10:05 dpsapps 
+
+root@sip:/opt# rm -rf dpsapps 
+
+root@sip:/opt# 
+
+root@sip:/opt# 
+
+root@sip:/opt# pwd 
+
+/opt 
+
+root@sip:/opt# 
+
+  
+
+ 
+
+ 
+
+=> Now install the package. 
+
+root@sip:/tmp/fsagent# ./install.sh --skip-driver 
+
+silent is off. 
+
+The user is not ppdmusr. 
+
+Do you want to install the agent service package as a non-privileged user (y/n)? [default: n]: 
+
+Agent Service will be installed as privileged user. 
+
+dpkg-query: no packages found matching powerprotect-agentsvc 
+
+2024/08/31 11:46:49 To configure firewall rules run /opt/dpsapps/agentsvc/configfw.sh 
+
+2024/08/31 11:46:49 Skipping the block based backup driver installation. 
+
+Do you wish to register with PowerProtect Data Manager? [y/n] y 
+
+Enter PowerProtect Data Manager hostname or IP: 10.141.157.92 
+
+Do you want to enable pre-scripts and post-scripts? (y/n)y 
+
+2024/08/31 11:47:04 /opt/dpsapps/agentsvc/register.sh --PowerProtectServer=10.141.157.92 --scriptsEnabled=True 
+
+The PowerProtect Data Manager server FQDN or IP address that is used by the application agent host is 10.141.157.92. 
+
+To use the Fully Qualified Domain Name (FQDN) as the preferred address for the agent host, in the PowerProtect Data Manager UI, go to Infrastructure > Application Agents and select Configure DNS Name Resolution. 
+
+Enter the preferred FQDN or IP address of the application host: 10.142.61.68 
+
+Preferred Address of the application host is 10.142.61.68 
+
+Enter the port number from the supported ranges 7000 to 7009 and 7012 to 7020. Ports 7010 and 7011 are used by the agent service process. 
+
+Enter the port number for the agent service (7000 by default): 
+
+Do you want to add the firewall rule for the port 7000 (y/n)? (y by default) 
+
+Running the firewall script /opt/dpsapps/agentsvc/configfw.sh for setting the firewall rule. 
+
+Firewall is not enabled on this system 
+
+The port number used by the application agent host is 7000. 
+
+TMPDIR set to value /opt/dpsapps/agentsvc/tmp 
+
+Agent service (pid 2356050) started successfully. 
+
+Checking for PowerProtect Data Manager server accessibility. 
+
+PowerProtect Data Manager server is accessible. 
+
+The PowerProtect Data Manager File system agent installation was successful, and the request for agent registration has been sent to the PowerProtect Data Manager Server. Go to Infrastructure >Application Agents in the PowerProtect Data Manager UI to confirm that the registration completed successfully. 
+
+root@sip:/tmp/fsagent# 
+
+ 
+
+ 
+
+ 
+
+ 
+
+Expected errors you may encounter:  
+
+Error -  [2025-03-12 10:41:47,675 GMT| 2025-03-12 10:41:47,676837 UTC| AGENTSVC_OP| PID-413121| TID-140235014021120| ERROR] /opt/dpsapps/agentsvc/tmp/_MEIxdAjTF/Http/HTTPServer.pyc-get_ppdm_id_from_ppdm()-Line 5480- Error occurred while sending request to PowerProtect Data Manager for fetching ppdm_id: 'NoneType' object has no attribute 'get' 
+
+Traceback (most recent call last): 
+
+  File "Http/HTTPServer.py", line 5474, in get_ppdm_id_from_ppdm 
+
+AttributeError: 'NoneType' object has no attribute 'get' 
+
+ 
+
+A screen shot of a computer
+
+AI-generated content may be incorrect. 
+
+ 
+
+This error happens when there is a mistake in host entries.  
+
+ 
+
+ 
+
+ 
+
+Solution:  
+
+As you can see in the image below the hostname of the VM was crm-3 but is the host file it is mentioned as crm3. Change the fqdn to the hostname of the vm as well as short url.  
+
+A computer screen shot of a computer code
+
+AI-generated content may be incorrect. 
