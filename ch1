@@ -7,13 +7,13 @@ react
 node - email ticket chat also reports , testing 
 debugging 
 
-troubleshoot (tps) smart vault hits to ccs , configuration /etc/hosts url added of smartvault , made sso possible 
+troubleshoot (tps) smart vault hits to ccs , configuration /etc/hosts url added of smartvault , made sso possible , dns entries and adding prodbackendurl to make it possible
 
-HA set up from crm , grafana , mariadb ,mongodb cluster shards  // also on lb(need session from manas)
+HA set up from crm using scripts the processor shift, grafana , mariadb ,mongodb cluster shards  // also on lb(need session from manas)
 
 keepalived setup for load balancing
 
-handleling the databases mongo and the mariadb and theri HA set up mariadb maste master 
+handleling the databases mongo and the mariadb and theri HA set up mariadb maste master  keepalived
 
 and the mongodb one more and cluster and primary selection set up
 
@@ -24,3 +24,4 @@ standlone created dev environment on the ocp , 3 vm devcrm ,devsip(webrtc , aste
 /// networking for this in , onm ,out ip
 
 backup process and the agent installed fluentd , what all the api's work and  how the data sync between the client and the dell server 
+Load Testing 
