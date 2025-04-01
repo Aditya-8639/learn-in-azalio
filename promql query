@@ -1,0 +1,77 @@
+# Understanding the PromQL Query: `sum(rate(node_cpu_seconds_total{mode!="idle"}[1m])) by (instance)`
+
+
+## **Purpose of the Query**
+This PromQL query calculates the **total CPU usage per second** for each instance (server/machine). It sums up all CPU time spent in states **other than idle** over the last 1-minute window.
+
+---
+
+## **Breaking Down the Query Step by Step**
+### **1️⃣ `node_cpu_seconds_total{mode!="idle"}`**
+- `node_cpu_seconds_total` is a Prometheus metric that records the total CPU time spent in different modes.
+- `{mode!="idle"}` filters out the **idle** mode, meaning we are only counting CPU time that was actively used.
+- Other CPU modes that contribute to the total usage include:
+  - `user` → Time spent running user-space applications
+  - `system` → Time spent running system processes
+  - `iowait` → Time spent waiting for disk I/O
+  - `irq` and `softirq` → Time spent handling hardware and software interrupts
+
+👉 **This ensures that we only measure the CPU time spent doing actual work.**
+
+---
+
+### **2️⃣ `rate(...[1m])`**
+- `rate(...)` calculates the **per-second rate** of change for the selected CPU time values.
+- `[1m]` specifies that we are looking at data over the past 1 minute.
+
+#### **Example:**
+If a single CPU core spent **30 seconds in user mode** over the last **60 seconds**,
+```rate(...)``` would return **0.5 (seconds per second)**, meaning **50% of a CPU core was used.**
+
+---
+
+### **3️⃣ `sum(...) by (instance)`**
+- `node_cpu_seconds_total` records CPU time **per core**.
+- `sum(...) by (instance)` aggregates the values across all cores in each instance (server).
+- This gives us the **total CPU usage across all cores** in the instance.
+
+#### **Example for a 4-core system:**
+| Core | CPU Time Used (per second) |
+|------|---------------------------|
+| Core 1 | 0.4 |
+| Core 2 | 0.3 |
+| Core 3 | 0.5 |
+| Core 4 | 0.6 |
+
+Summing these values:
+**Total CPU usage = 0.4 + 0.3 + 0.5 + 0.6 = 1.8 cores worth of usage**
+
+👉 This tells us **how many full CPU cores are being used** at a given moment per instance.
+
+---
+
+## **Final Meaning of the Query**
+- It tells us **how many CPU cores are being fully utilized per second** for each instance, based on the last 1-minute activity.
+- If the result is **8.0** on a **16-core system**, it means **half the system is busy**.
+- If the result is **16.0** on a **16-core system**, it means **the CPU is fully utilized**.
+- If the result is **20.0** on a **16-core system**, it means **the system is overloaded** (tasks are waiting for CPU time).
+
+---
+
+## **Why Is This Useful?**
+✅ Helps monitor **CPU load trends** in real-time.
+✅ Can be used for **alerting** (e.g., trigger an alert if CPU usage is above 80% of total cores).
+✅ Helps in **scaling decisions** (e.g., adding more CPU resources if usage is consistently high).
+
+---
+
+## **Example Alert Rule** (Trigger an alert if CPU usage exceeds 85% of available cores)
+```promql
+(sum(rate(node_cpu_seconds_total{mode!="idle"}[1m])) by (instance))
+  / count(node_cpu_seconds_total{mode="idle"}) by (instance) * 100 > 85
+```
+
+This rule calculates **CPU usage as a percentage of total available CPU cores** and triggers an alert if it goes beyond **85% usage**.
+
+Would you like further refinements or additional metrics? 🚀
+
