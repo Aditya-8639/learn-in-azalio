@@ -1,0 +1,47 @@
+Domain	Concepts	Weightage
+
+https://devopscube.com/prometheus-certified-associate/
+
+
+Observability Concepts
+1. Metrics
+2. Understand logs and events
+3. Tracing and Spans
+4. Push vs Pull
+5. Service Discovery
+6. Basics of SLOs, SLAs, and SLIs	18%
+
+
+Prometheus Fundamentals
+
+1. System Architecture 
+2. Configuration and Scraping 
+3. Understanding Prometheus 
+4. Limitations Data Model and 
+5. Labels Exposition Format	20%
+
+PromQL
+
+1. Selecting Data
+2. Rates and Derivatives
+3. Aggregating over time
+4. Aggregating over dimensions
+5. dimensions
+6. Binary operators
+7. Histograms
+8. Timestamp Metrics	28%
+
+Instrumentation and Exporters	
+
+1. Client Libraries
+2. Instrumentation
+3. Exporters
+4. Structuring and naming metrics	16%
+
+Alerting & Dashboarding
+
+1. Dashboarding basics
+2. Configuring Alerting rules
+3. Understand and Use 
+4. Alertmanager
+5. Alerting basics (when, what, and why)
