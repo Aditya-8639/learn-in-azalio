@@ -25,3 +25,6 @@ standlone created dev environment on the ocp , 3 vm devcrm ,devsip(webrtc , aste
 
 backup process and the agent installed fluentd , what all the api's work and  how the data sync between the client and the dell server  ppdm process
 Load Testing 
+
+
+mounting the nfs storage on central vm and making two directory for the logs and the recordings 
